@@ -4,20 +4,12 @@
    Semua file di-cache agar bisa dipakai tanpa internet.
    ============================================================ */
 
-const CACHE_NAME   = 'ceksengketa-v1';
+const CACHE_NAME   = 'ceksengketa-v2';
 const CACHE_ASSETS = [
   './',
   './index.html',
   './style.css',
   './script.js',
-  './icon-72.png',
-  './icon-96.png',
-  './icon-128.png',
-  './icon-144.png',
-  './icon-152.png',
-  './icon-192.png',
-  './icon-384.png',
-  './icon-512.png',
 ];
 
 /* ── INSTALL: cache semua asset utama ── */

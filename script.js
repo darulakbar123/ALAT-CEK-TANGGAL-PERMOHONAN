@@ -12,7 +12,7 @@
     setTimeout(() => {
       splash.remove();
     }, 350);
-  }, 2000);
+  }, 3500);
 })();
 
 /**
@@ -1138,13 +1138,14 @@ function renderKalender(data, hasil) {
 
   /* ── ANDROID / CHROME ── */
   window.addEventListener('beforeinstallprompt', e => {
-    e.preventDefault();
+    e.preventDefault();   // simpan event, jangan tampilkan prompt native
     deferredPrompt = e;
-
     if (dismissed) return;
-
-    const banner = document.getElementById('installBanner');
-    if (banner) banner.style.display = 'flex';
+    // Tampilkan banner custom setelah 1.5 detik (beri waktu splash selesai)
+    setTimeout(() => {
+      const banner = document.getElementById('installBanner');
+      if (banner) banner.style.display = 'flex';
+    }, 1500);
   });
 
   window.addEventListener('appinstalled', () => {
