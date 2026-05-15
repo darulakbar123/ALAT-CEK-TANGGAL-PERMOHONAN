@@ -735,3 +735,448 @@ details[open] .chevron { transform: rotate(180deg); }
   }
   .kalender-legend { padding: var(--space-3) var(--space-4); gap: var(--space-3); }
 }
+
+/* ============================================================
+   MOBILE-FRIENDLY ENHANCEMENTS
+   Touch targets, font sizes, layout improvements
+   ============================================================ */
+
+/* Prevent iOS zoom on input focus — wajib min 16px */
+input[type="date"],
+input[type="text"],
+input[type="email"],
+select,
+textarea {
+  font-size: 16px !important;
+}
+
+/* Touch targets minimum 44px (Apple HIG) */
+.btn {
+  min-height: 44px;
+}
+
+.radio-label {
+  min-height: 44px;
+  padding: var(--space-3) var(--space-4);
+}
+
+/* ── HEADER MOBILE ── */
+@media (max-width: 540px) {
+  .header-inner {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-4);
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-6);
+  }
+
+  .header-logo-wrap {
+    width: 80px;
+    height: 80px;
+  }
+
+  .header-keterangan {
+    font-size: 0.60rem;
+  }
+
+  .header-title {
+    font-size: 1.35rem;
+  }
+
+  .header-ref-laws {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-2);
+  }
+
+  .header-ref-laws span {
+    font-size: 0.60rem;
+    padding: 3px 8px;
+  }
+}
+
+/* ── FORM MOBILE ── */
+@media (max-width: 540px) {
+  .form-block {
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+  }
+
+  .form-row.two-col {
+    grid-template-columns: 1fr;
+  }
+
+  .form-group.half {
+    max-width: 100%;
+  }
+
+  .form-group input[type="date"] {
+    padding: var(--space-3) var(--space-3);
+    border-radius: var(--radius-sm);
+  }
+
+  .radio-group {
+    flex-direction: column;
+  }
+
+  .radio-label {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+    gap: var(--space-3);
+  }
+
+  .form-actions .btn {
+    width: 100%;
+    justify-content: center;
+    font-size: 1rem;
+    padding: var(--space-3) var(--space-4);
+  }
+}
+
+/* ── RESULT MOBILE ── */
+@media (max-width: 540px) {
+  .status-card {
+    padding: var(--space-5);
+    border-radius: var(--radius-lg);
+  }
+
+  .status-header {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .status-icon-wrap { font-size: 2.5rem; }
+
+  .status-value {
+    font-size: 1.3rem;
+    word-break: break-word;
+  }
+
+  .result-actions {
+    flex-direction: column-reverse;
+    gap: var(--space-3);
+  }
+
+  .result-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .disclaimer-card {
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-4);
+  }
+
+  .timeline-container { padding: var(--space-4) var(--space-3); }
+  .legal-list { padding: var(--space-3); }
+}
+
+/* ── KALENDER MOBILE ── */
+@media (max-width: 540px) {
+  .kalender-bulan-grid {
+    grid-template-columns: 1fr;
+    padding: var(--space-4) var(--space-3);
+    gap: var(--space-4);
+  }
+
+  .kalender-legend {
+    padding: var(--space-3);
+    gap: var(--space-2);
+  }
+
+  .legend-item { font-size: 0.72rem; }
+
+  .cal-day {
+    font-size: 0.72rem;
+    min-height: 28px;
+  }
+
+  .cal-wh { font-size: 0.60rem; }
+}
+
+/* ── PANDUAN MOBILE ── */
+@media (max-width: 540px) {
+  .alur-grid { grid-template-columns: 1fr; }
+  .panduan-konten { padding: 0 var(--space-3) var(--space-4); }
+  .panduan-toggle { padding: var(--space-4); font-size: 0.9rem; }
+}
+
+/* ── SECTION HEADER MOBILE ── */
+@media (max-width: 540px) {
+  .section-header { gap: var(--space-3); }
+  .section-nomor  { font-size: 1.6rem; }
+  .section-judul  { font-size: 1.2rem; }
+}
+
+/* ── FOOTER MOBILE ── */
+@media (max-width: 540px) {
+  .footer-brand {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .footer-logo { width: 44px; height: 44px; }
+  .footer-firm { font-size: 0.85rem; }
+  .footer-refs { font-size: 0.72rem; }
+}
+
+/* ── INSTALL BANNER ── */
+.install-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  background: var(--blue-dark);
+  color: white;
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.25);
+  border-top: 3px solid var(--blue-light);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+.install-banner-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex: 1;
+}
+
+.install-banner-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+  background: white;
+  padding: 3px;
+  object-fit: contain;
+}
+
+.install-banner-text strong {
+  display: block;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  color: white;
+}
+
+.install-banner-text p {
+  font-size: 0.75rem;
+  color: var(--blue-light);
+  margin-top: 2px;
+}
+
+.install-banner-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.btn-install {
+  background: white;
+  color: var(--blue-dark);
+  border: none;
+  border-radius: var(--radius-full);
+  padding: 8px 18px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  min-height: 36px;
+}
+
+.btn-install:hover { background: #e0e7ff; }
+
+.btn-dismiss {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.7);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* iOS banner */
+.ios-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  background: var(--blue-dark);
+  color: white;
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.25);
+  border-top: 3px solid var(--blue-light);
+  animation: slideUp 0.3s ease;
+  font-size: 0.85rem;
+}
+
+.ios-banner p { flex: 1; line-height: 1.5; }
+.ios-banner strong { color: var(--blue-light); }
+
+/* ============================================================
+   SPLASH SCREEN
+   Durasi: 1 detik tampil → 0.35 detik fade out
+   ============================================================ */
+
+.splash-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: linear-gradient(150deg, #0d1f3c 0%, #1a3a6b 55%, #1e4d8a 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  transition: opacity 0.35s ease;
+  overflow: hidden;
+}
+
+/* Fade out class (ditambah via JS) */
+.splash-screen.splash-fade {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Pola batik kawung — sama seperti header */
+.splash-batik {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Cellipse cx='28' cy='12' rx='10' ry='11' fill='none' stroke='rgba(255,255,255,0.07)' stroke-width='1.2'/%3E%3Cellipse cx='28' cy='44' rx='10' ry='11' fill='none' stroke='rgba(255,255,255,0.07)' stroke-width='1.2'/%3E%3Cellipse cx='12' cy='28' rx='11' ry='10' fill='none' stroke='rgba(255,255,255,0.07)' stroke-width='1.2'/%3E%3Cellipse cx='44' cy='28' rx='11' ry='10' fill='none' stroke='rgba(255,255,255,0.07)' stroke-width='1.2'/%3E%3Ccircle cx='28' cy='28' r='3.5' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  pointer-events: none;
+}
+
+/* Konten tengah */
+.splash-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  text-align: center;
+  padding: 0 var(--space-8);
+  animation: splashIn 0.4s ease both;
+}
+
+@keyframes splashIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Logo */
+.splash-logo-wrap {
+  width: 110px;
+  height: 110px;
+  border-radius: 20px;
+  background: #ffffff;
+  padding: 8px;
+  margin-bottom: 20px;
+  box-shadow:
+    0 8px 32px rgba(0,0,0,0.40),
+    0 0 0 1px rgba(255,255,255,0.15);
+}
+
+.splash-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 12px;
+  display: block;
+}
+
+/* Nama firma */
+.splash-firm {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+  margin-bottom: 6px;
+}
+
+.splash-tagline {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+/* Garis pemisah */
+.splash-divider {
+  width: 48px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #93c5fd, transparent);
+  border-radius: 99px;
+  margin-bottom: 20px;
+}
+
+/* Nama aplikasi */
+.splash-appname {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #93c5fd;
+  margin-bottom: 4px;
+}
+
+.splash-appsub {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.45);
+  font-style: italic;
+  margin-bottom: 28px;
+}
+
+/* Loading bar */
+.splash-bar {
+  width: 120px;
+  height: 3px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.splash-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #93c5fd, #ffffff);
+  border-radius: 99px;
+  animation: splashLoad 1s ease forwards;
+}
+
+@keyframes splashLoad {
+  from { width: 0%; }
+  to   { width: 100%; }
+}

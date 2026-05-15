@@ -22,6 +22,35 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,500;0,600;0,700;1,600&family=Nunito:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 </head>
 <body>
+  <!-- ======================================================
+       SPLASH SCREEN — muncul 1 detik lalu fade out
+       ====================================================== -->
+  <div id="splashScreen" class="splash-screen" aria-hidden="true">
+    <!-- Pola batik subtle (sama seperti header) -->
+    <div class="splash-batik"></div>
+
+    <div class="splash-content">
+      <!-- Logo -->
+      <div class="splash-logo-wrap">
+        <img src="icons/icon-192.png" alt="Darul Akbar & Partners" class="splash-logo">
+      </div>
+
+      <!-- Nama firma -->
+      <div class="splash-firm">Darul Akbar &amp; Partners</div>
+      <div class="splash-tagline">Konsultan Hukum &amp; Penyelesaian Sengketa Informasi</div>
+
+      <!-- Garis pemisah -->
+      <div class="splash-divider"></div>
+
+      <!-- Nama aplikasi -->
+      <div class="splash-appname">Pemeriksa Tenggat Waktu</div>
+      <div class="splash-appsub">Sengketa Informasi Publik</div>
+
+      <!-- Loading bar -->
+      <div class="splash-bar"><div class="splash-bar-fill"></div></div>
+    </div>
+  </div>
+
 
   <!-- ======================================================
        HEADER
@@ -339,6 +368,31 @@
   </footer>
 
   <script src="script.js"></script>
+
+
+  <!-- ======================================================
+       PWA INSTALL BANNER
+       ====================================================== -->
+  <!-- Android / Chrome install prompt -->
+  <div id="installBanner" class="install-banner" style="display:none;" role="banner" aria-label="Install aplikasi">
+    <div class="install-banner-left">
+      <img src="icons/icon-72.png" class="install-banner-icon" alt="CekSengketa">
+      <div class="install-banner-text">
+        <strong>Install CekSengketa</strong>
+        <p>Tambahkan ke homescreen — bisa dipakai offline</p>
+      </div>
+    </div>
+    <div class="install-banner-actions">
+      <button id="btnInstall" class="btn-install">📲 Install</button>
+      <button id="btnDismiss" class="btn-dismiss" aria-label="Tutup">✕</button>
+    </div>
+  </div>
+
+  <!-- iOS Safari install hint -->
+  <div id="iosBanner" class="ios-banner" style="display:none;" role="banner">
+    <p>📲 Install: Tap <strong>Share ↑</strong> lalu pilih <strong>"Add to Home Screen"</strong></p>
+    <button id="btnIosDismiss" class="btn-dismiss" aria-label="Tutup">✕</button>
+  </div>
 
   <!-- Registrasi Service Worker (PWA offline support) -->
   <script>

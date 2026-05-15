@@ -1,3 +1,20 @@
+
+/* ============================================================
+   SPLASH SCREEN — hilang setelah 1 detik
+   ============================================================ */
+(function() {
+  const splash = document.getElementById('splashScreen');
+  if (!splash) return;
+
+  // 1000ms tampil → fade out 350ms → remove dari DOM
+  setTimeout(() => {
+    splash.classList.add('splash-fade');
+    setTimeout(() => {
+      splash.remove();
+    }, 350);
+  }, 1000);
+})();
+
 /**
  * PEMERIKSA TENGGAT WAKTU SENGKETA INFORMASI PUBLIK
  * script.js — Logika Utama Aplikasi
@@ -1106,3 +1123,80 @@ function renderKalender(data, hasil) {
 
   section.style.display = 'block';
 }
+
+/* ============================================================
+   PWA INSTALL PROMPT
+   Android: pakai beforeinstallprompt event
+   iOS: deteksi Safari + belum standalone → tampilkan hint
+   ============================================================ */
+(function() {
+  let deferredPrompt = null;
+  const DISMISS_KEY = 'pwa_install_dismissed';
+
+  // Jangan tampilkan kalau sudah pernah dismiss
+  const dismissed = sessionStorage.getItem(DISMISS_KEY);
+
+  /* ── ANDROID / CHROME ── */
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+
+    if (dismissed) return;
+
+    const banner = document.getElementById('installBanner');
+    if (banner) banner.style.display = 'flex';
+  });
+
+  window.addEventListener('appinstalled', () => {
+    const banner = document.getElementById('installBanner');
+    if (banner) banner.style.display = 'none';
+    deferredPrompt = null;
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // Tombol Install (Android)
+    const btnInstall = document.getElementById('btnInstall');
+    if (btnInstall) {
+      btnInstall.addEventListener('click', async () => {
+        const banner = document.getElementById('installBanner');
+        if (banner) banner.style.display = 'none';
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        deferredPrompt = null;
+      });
+    }
+
+    // Tombol Dismiss (Android)
+    const btnDismiss = document.getElementById('btnDismiss');
+    if (btnDismiss) {
+      btnDismiss.addEventListener('click', () => {
+        const banner = document.getElementById('installBanner');
+        if (banner) banner.style.display = 'none';
+        sessionStorage.setItem(DISMISS_KEY, '1');
+      });
+    }
+
+    /* ── iOS Safari ── */
+    const isIos    = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    const isSafari = /safari/i.test(navigator.userAgent) && !/chrome/i.test(navigator.userAgent);
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+                      || window.navigator.standalone === true;
+
+    if (isIos && isSafari && !isStandalone && !dismissed) {
+      const iosBanner = document.getElementById('iosBanner');
+      if (iosBanner) {
+        setTimeout(() => { iosBanner.style.display = 'flex'; }, 1500);
+      }
+    }
+
+    const btnIosDismiss = document.getElementById('btnIosDismiss');
+    if (btnIosDismiss) {
+      btnIosDismiss.addEventListener('click', () => {
+        const iosBanner = document.getElementById('iosBanner');
+        if (iosBanner) iosBanner.style.display = 'none';
+        sessionStorage.setItem(DISMISS_KEY, '1');
+      });
+    }
+  });
+})();
