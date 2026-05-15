@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pemeriksa Tenggat Waktu Sengketa Informasi Publik</title>
+  <meta name="description" content="Alat bantu pemeriksaan administratif awal permohonan sengketa informasi publik berdasarkan UU KIP dan PERKI.">
+  <link rel="stylesheet" href="style.css">
+  <!-- 
+    Font: Poppins (heading — bersih, modern) + Nunito (body — lembut, ramah)
+    Kombinasi ini memberikan kesan segar, nyaman dibaca, tidak kaku.
+  -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,500;0,600;0,700;1,600&family=Nunito:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- ======================================================
+       HEADER UTAMA
+       ====================================================== -->
+  <header class="site-header">
+    <div class="header-top-bar"></div>
+    <div class="container header-inner">
+      <div class="header-emblem" aria-hidden="true">⚖</div>
+      <div class="header-text">
+        <p class="header-keterangan">Alat Bantu Administratif — Independen &amp; Tidak Resmi</p>
+        <h1 class="header-title">Pemeriksa Tenggat Waktu</h1>
+        <p class="header-subtitle">Permohonan Sengketa Informasi Publik</p>
+      </div>
+      <div class="header-ref-laws" aria-label="Referensi hukum">
+        <span>UU KIP</span>
+        <span>PERKI 1/2013</span>
+        <span>PERKI 1/2021</span>
+      </div>
+    </div>
+    <div class="header-gold-bar"></div>
+  </header>
+
+  <!-- ======================================================
+       KONTEN UTAMA
+       ====================================================== -->
+  <main class="container main-content">
+
+    <!-- Pesan Info Singkat -->
+    <div class="alert-info" role="note">
+      <div class="alert-icon" aria-hidden="true">ℹ</div>
+      <div class="alert-body">
+        <strong>Tentang Alat Ini</strong>
+        <p>
+          Alat ini membantu Anda memeriksa apakah pengajuan permohonan sengketa informasi publik 
+          memenuhi persyaratan tenggat waktu administratif. Isi seluruh data dengan tepat sesuai 
+          dokumen yang Anda miliki. Hasil pemeriksaan bersifat <em>indikatif</em>, bukan putusan hukum.
+        </p>
+      </div>
+    </div>
+
+    <!-- Panduan Alur (Collapsible) -->
+    <details class="panduan-card">
+      <summary class="panduan-toggle">
+        <span class="panduan-icon" aria-hidden="true">📖</span>
+        Panduan Alur Sengketa Informasi Publik
+        <span class="chevron" aria-hidden="true">▾</span>
+      </summary>
+      <div class="panduan-konten">
+        <div class="alur-grid">
+          <div class="alur-item">
+            <div class="alur-nomor">1</div>
+            <div class="alur-detail">
+              <strong>Permohonan Informasi</strong>
+              <p>Ajukan permohonan informasi kepada PPID. PPID wajib merespons dalam <em>10 hari kerja</em> (bisa diperpanjang 7 hari kerja).</p>
+              <cite>Pasal 22 UU KIP</cite>
+            </div>
+          </div>
+          <div class="alur-item">
+            <div class="alur-nomor">2</div>
+            <div class="alur-detail">
+              <strong>Keberatan kepada Atasan PPID</strong>
+              <p>Jika PPID tidak merespons atau responnya tidak memuaskan, ajukan keberatan kepada Atasan PPID dalam <em>30 hari kerja</em>.</p>
+              <cite>Pasal 35 UU KIP</cite>
+            </div>
+          </div>
+          <div class="alur-item">
+            <div class="alur-nomor">3</div>
+            <div class="alur-detail">
+              <strong>Jawaban Atasan PPID</strong>
+              <p>Atasan PPID wajib menjawab keberatan dalam <em>30 hari kerja</em> sejak keberatan diterima.</p>
+              <cite>Pasal 36 ayat (2) UU KIP</cite>
+            </div>
+          </div>
+          <div class="alur-item">
+            <div class="alur-nomor">4</div>
+            <div class="alur-detail">
+              <strong>Sengketa ke Komisi Informasi</strong>
+              <p>
+                <b>Jika tidak ada jawaban keberatan:</b> ajukan sengketa dalam <em>14 hari kerja</em> setelah berakhirnya batas waktu Atasan PPID.<br>
+                <b>Jika ada jawaban keberatan:</b> ajukan sengketa dalam <em>14 hari kerja</em> sejak jawaban diterima.
+              </p>
+              <cite>Pasal 13 PERKI No. 1 Tahun 2013</cite>
+            </div>
+          </div>
+        </div>
+        <p class="panduan-catatan">
+          <strong>Catatan:</strong> Hari kerja tidak termasuk Sabtu, Minggu, dan hari libur nasional/cuti bersama Indonesia.
+        </p>
+      </div>
+    </details>
+
+    <!-- ======================================================
+         SECTION 01 — FORM INPUT
+         ====================================================== -->
+    <section class="form-section" id="formSection">
+      <div class="section-header">
+        <div class="section-nomor" aria-hidden="true">01</div>
+        <div>
+          <h2 class="section-judul">Data Permohonan &amp; Keberatan</h2>
+          <p class="section-deskripsi">Isi seluruh data di bawah sesuai dengan dokumen permohonan, keberatan, dan sengketa yang Anda miliki.</p>
+        </div>
+      </div>
+
+      <form id="checkForm" novalidate>
+
+        <!-- ---- BLOK A: Permohonan Informasi ---- -->
+        <fieldset class="form-block">
+          <legend class="form-block-legend">
+            <span class="legend-badge" aria-hidden="true">A</span>
+            Tahap 1 — Permohonan Informasi kepada PPID
+          </legend>
+
+          <div class="form-row two-col">
+            <!-- Tanggal Permohonan -->
+            <div class="form-group">
+              <label for="tglPermohonan">
+                Tanggal Permohonan Diajukan
+                <abbr title="Wajib diisi" class="required">*</abbr>
+              </label>
+              <input
+                type="date"
+                id="tglPermohonan"
+                name="tglPermohonan"
+                required
+                aria-describedby="hint-tgl-permohonan"
+              >
+              <span class="form-hint" id="hint-tgl-permohonan">
+                Tanggal saat Anda mengajukan permohonan informasi kepada PPID.
+              </span>
+            </div>
+
+            <!-- Tanggal Diterima Termohon -->
+            <div class="form-group">
+              <label for="tglDiterimaTermohon">
+                Tanggal Diterima oleh PPID/Termohon
+                <abbr title="Wajib diisi" class="required">*</abbr>
+              </label>
+              <input
+                type="date"
+                id="tglDiterimaTermohon"
+                name="tglDiterimaTermohon"
+                required
+                aria-describedby="hint-tgl-diterima"
+              >
+              <span class="form-hint" id="hint-tgl-diterima">
+                Tanggal sesuai tanda terima dari PPID (bisa sama atau sehari setelah permohonan diajukan).
+              </span>
+            </div>
+          </div>
+
+          <!-- Radio: Ada tanggapan PPID? -->
+          <div class="form-row">
+            <div class="form-group">
+              <fieldset class="radio-fieldset">
+                <legend>
+                  Apakah PPID Memberikan Tanggapan/Jawaban?
+                  <abbr title="Wajib diisi" class="required">*</abbr>
+                </legend>
+                <div class="radio-group">
+                  <label class="radio-label">
+                    <input type="radio" name="adaTanggapanPPID" value="ya" id="tanggapanYa">
+                    <span class="radio-custom" aria-hidden="true"></span>
+                    Ya, ada tanggapan
+                  </label>
+                  <label class="radio-label">
+                    <input type="radio" name="adaTanggapanPPID" value="tidak" id="tanggapanTidak">
+                    <span class="radio-custom" aria-hidden="true"></span>
+                    Tidak ada tanggapan
+                  </label>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+
+          <!-- Conditional: Tanggal tanggapan PPID -->
+          <div class="form-row conditional-row" id="rowTanggapanPPID" aria-hidden="true">
+            <div class="form-group">
+              <label for="tglTanggapanPPID">
+                Tanggal Tanggapan PPID Diterima Pemohon
+                <abbr title="Wajib diisi jika ada tanggapan" class="required">*</abbr>
+              </label>
+              <input
+                type="date"
+                id="tglTanggapanPPID"
+                name="tglTanggapanPPID"
+                aria-describedby="hint-tanggapan-ppid"
+              >
+              <span class="form-hint" id="hint-tanggapan-ppid">
+                Tanggal saat Anda menerima surat tanggapan/jawaban dari PPID.
+              </span>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- ---- BLOK B: Keberatan ---- -->
+        <fieldset class="form-block">
+          <legend class="form-block-legend">
+            <span class="legend-badge" aria-hidden="true">B</span>
+            Tahap 2 — Pengajuan Keberatan kepada Atasan PPID
+          </legend>
+
+          <div class="form-row">
+            <div class="form-group half">
+              <label for="tglKeberatan">
+                Tanggal Keberatan Diajukan
+                <abbr title="Wajib diisi" class="required">*</abbr>
+              </label>
+              <input
+                type="date"
+                id="tglKeberatan"
+                name="tglKeberatan"
+                required
+                aria-describedby="hint-keberatan"
+              >
+              <span class="form-hint" id="hint-keberatan">
+                Tanggal saat Anda mendaftarkan keberatan kepada Atasan PPID.
+              </span>
+            </div>
+          </div>
+
+          <!-- Radio: Ada jawaban keberatan? -->
+          <div class="form-row">
+            <div class="form-group">
+              <fieldset class="radio-fieldset">
+                <legend>
+                  Apakah Atasan PPID Memberikan Jawaban Keberatan?
+                  <abbr title="Wajib diisi" class="required">*</abbr>
+                </legend>
+                <div class="radio-group">
+                  <label class="radio-label">
+                    <input type="radio" name="adaJawabanKeberatan" value="ya" id="jawabanYa">
+                    <span class="radio-custom" aria-hidden="true"></span>
+                    Ya, ada jawaban
+                  </label>
+                  <label class="radio-label">
+                    <input type="radio" name="adaJawabanKeberatan" value="tidak" id="jawabanTidak">
+                    <span class="radio-custom" aria-hidden="true"></span>
+                    Tidak ada jawaban dalam 30 hari kerja
+                  </label>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+
+          <!-- Conditional: Tanggal jawaban keberatan -->
+          <div class="form-row conditional-row" id="rowJawabanKeberatan" aria-hidden="true">
+            <div class="form-group half">
+              <label for="tglJawabanKeberatan">
+                Tanggal Jawaban Keberatan Diterima Pemohon
+                <abbr title="Wajib diisi jika ada jawaban" class="required">*</abbr>
+              </label>
+              <input
+                type="date"
+                id="tglJawabanKeberatan"
+                name="tglJawabanKeberatan"
+                aria-describedby="hint-jawaban-keberatan"
+              >
+              <span class="form-hint" id="hint-jawaban-keberatan">
+                Tanggal saat Anda menerima surat jawaban keberatan dari Atasan PPID.
+              </span>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- ---- BLOK C: Sengketa ---- -->
+        <fieldset class="form-block">
+          <legend class="form-block-legend">
+            <span class="legend-badge" aria-hidden="true">C</span>
+            Tahap 3 — Pengajuan Permohonan Sengketa Informasi
+          </legend>
+
+          <div class="form-row">
+            <div class="form-group half">
+              <label for="tglSengketa">
+                Tanggal Permohonan Sengketa Diajukan
+                <abbr title="Wajib diisi" class="required">*</abbr>
+              </label>
+              <input
+                type="date"
+                id="tglSengketa"
+                name="tglSengketa"
+                required
+                aria-describedby="hint-sengketa"
+              >
+              <span class="form-hint" id="hint-sengketa">
+                Tanggal saat Anda mendaftarkan permohonan sengketa ke Komisi Informasi.
+              </span>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Pesan Error Validasi -->
+        <div class="validation-error" id="validationError" role="alert" aria-live="polite" style="display:none;"></div>
+
+        <!-- Tombol Aksi Form -->
+        <div class="form-actions">
+          <button type="button" id="btnReset" class="btn btn-secondary">
+            <span aria-hidden="true">↺</span> Reset Form
+          </button>
+          <button type="submit" id="btnCheck" class="btn btn-primary">
+            Periksa Tenggat Waktu <span aria-hidden="true">→</span>
+          </button>
+        </div>
+
+      </form>
+    </section>
+
+    <!-- ======================================================
+         SECTION 02 — HASIL PEMERIKSAAN
+         (Tersembunyi sampai form disubmit)
+         ====================================================== -->
+    <section class="result-section" id="resultSection" aria-live="polite" style="display:none;">
+      <div class="section-header">
+        <div class="section-nomor" aria-hidden="true">02</div>
+        <div>
+          <h2 class="section-judul">Hasil Pemeriksaan Administratif</h2>
+          <p class="section-deskripsi">Berdasarkan data yang diinput, berikut adalah hasil pemeriksaan tenggat waktu pengajuan sengketa.</p>
+        </div>
+      </div>
+
+      <!-- Card Status Utama -->
+      <div class="status-card" id="statusCard" role="region" aria-label="Status permohonan">
+        <div class="status-header">
+          <div class="status-icon-wrap" id="statusIcon" aria-hidden="true"></div>
+          <div class="status-info">
+            <div class="status-label">STATUS PERMOHONAN SENGKETA</div>
+            <div class="status-value" id="statusValue"></div>
+          </div>
+        </div>
+        <div class="status-divider" aria-hidden="true"></div>
+        <div class="status-penjelasan" id="statusPenjelasan"></div>
+      </div>
+
+      <!-- Peringatan Keberatan (jika ada) -->
+      <div class="alert-warning" id="peringatanKeberatan" role="alert" style="display:none;"></div>
+
+      <!-- Card Timeline -->
+      <div class="result-card timeline-card" role="region" aria-label="Timeline perhitungan">
+        <div class="result-card-header">
+          <h3>Timeline Perhitungan Hari Kerja</h3>
+          <p>Urutan kronologis berdasarkan tanggal yang diinput dan perhitungan hari kerja.</p>
+        </div>
+        <div class="timeline-container" id="timelineContainer" role="list"></div>
+        <div class="timeline-note">
+          <span aria-hidden="true">📅</span>
+          Perhitungan hari kerja mengecualikan Sabtu, Minggu, dan hari libur nasional/cuti bersama Indonesia.
+        </div>
+      </div>
+
+      <!-- Card Dasar Hukum -->
+      <div class="result-card legal-card" role="region" aria-label="Dasar hukum">
+        <div class="result-card-header">
+          <h3>Dasar Hukum yang Berlaku</h3>
+          <p>Peraturan perundang-undangan yang menjadi acuan perhitungan tenggat waktu.</p>
+        </div>
+        <div class="legal-list" id="legalList"></div>
+      </div>
+
+      <!-- Disclaimer Wajib -->
+      <div class="disclaimer-card" role="note">
+        <div class="disclaimer-icon" aria-hidden="true">⚠</div>
+        <div class="disclaimer-body">
+          <strong>PERHATIAN — DISCLAIMER</strong>
+          <p>
+            Hasil pemeriksaan ini merupakan <strong>pemeriksaan administratif awal</strong> berdasarkan 
+            data yang diinput pengguna dan <strong>bukan merupakan putusan hukum yang mengikat</strong>. 
+            Penentuan akhir tetap berada pada kewenangan Majelis Komisioner sesuai ketentuan 
+            peraturan perundang-undangan yang berlaku. Data hari libur yang digunakan bersifat 
+            statis dan mungkin tidak mencakup perubahan resmi terbaru.
+          </p>
+        </div>
+      </div>
+
+      <!-- Tombol Hasil -->
+      <div class="result-actions">
+        <button type="button" id="btnCetak" class="btn btn-secondary">
+          <span aria-hidden="true">🖨</span> Cetak / Simpan PDF
+        </button>
+        <button type="button" id="btnKembali" class="btn btn-primary">
+          <span aria-hidden="true">←</span> Periksa Kembali
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ======================================================
+       FOOTER
+       ====================================================== -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-refs">
+        <strong>Referensi Hukum:</strong>
+        UU No. 14 Tahun 2008 tentang KIP &bull;
+        PERKI No. 1 Tahun 2013 &bull;
+        PERKI No. 1 Tahun 2018 &bull;
+        PERKI No. 1 Tahun 2021
+      </div>
+      <div class="footer-note">
+        Alat bantu independen untuk pemohon — bukan produk atau layanan resmi lembaga manapun &bull;
+        Data libur nasional diperbarui s.d. tahun 2027
+      </div>
+    </div>
+  </footer>
+
+  <!-- Load script utama -->
+  <script src="script.js"></script>
+
+</body>
+</html>
