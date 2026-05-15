@@ -347,7 +347,7 @@ function periksaTenggat(data) {
   const dasarHukum = [];
 
   // Variabel hasil utama
-  let status, penjelasan, awalWindow, akhirWindow;
+  let status, penjelasan, awalWindow, akhirWindow, batasJawabAtasanPPID;
 
   // ----------------------------------------------------------
   // LANGKAH 1: Tambahkan titik awal ke timeline
@@ -412,7 +412,7 @@ function periksaTenggat(data) {
     // ===========================================================
 
     // Hitung batas waktu Atasan PPID menjawab (30 HK sejak keberatan)
-    const batasJawabAtasanPPID = tambahHariKerja(tglKeberatan, BATAS_JAWAB_ATASAN_PPID);
+    batasJawabAtasanPPID = tambahHariKerja(tglKeberatan, BATAS_JAWAB_ATASAN_PPID);
 
     // Window pengajuan sengketa:
     //   - Mulai: hari kerja pertama setelah batas 30 HK Atasan PPID
@@ -1021,6 +1021,16 @@ function getStatusTanggal(date, data, hasil) {
   // Hari libur nasional / cuti bersama
   if (adalahLiburNasional(date)) {
     return { kelas: 'cal-libur', tooltip: tooltip || 'Libur nasional / cuti bersama', marker };
+  }
+
+  // Zona PREMATUR: hari kerja dari hari ke-1 s/d ke-29
+  // (setelah tanggal keberatan, sebelum hari ke-30)
+  if (hasil.batasJawabAtasanPPID && data.tglKeberatan) {
+    const hariAwalPrematur = new Date(data.tglKeberatan);
+    hariAwalPrematur.setDate(hariAwalPrematur.getDate() + 1);
+    if (date >= hariAwalPrematur && date < hasil.batasJawabAtasanPPID) {
+      return { kelas: 'cal-merah-prematur', tooltip: tooltip || 'Zona prematur — belum dapat ajukan sengketa', marker };
+    }
   }
 
   // Hari ke-30 → KUNING (zona batas)

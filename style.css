@@ -590,11 +590,12 @@ details[open] .chevron { transform: rotate(180deg); }
   border: 1px solid rgba(0,0,0,0.08);
 }
 
-.ld-hijau   { background: #dcfce7; border-color: #86efac; }
-.ld-kuning  { background: #fef9c3; border-color: #fcd34d; }
-.ld-libur   { background: #fde8e8; border-color: #fca5a5; }
-.ld-weekend { background: #f1f5f9; border-color: #cbd5e1; }
-.ld-merah   { background: #fff1f2; border-color: #fca5a5; }
+.ld-hijau   { background: #16a34a; border-color: #15803d; }
+.ld-kuning  { background: #d97706; border-color: #b45309; }
+.ld-libur   { background: #7c3aed; border-color: #6d28d9; }
+.ld-weekend { background: #6d28d9; border-color: #5b21b6; }
+.ld-merah   { background: #dc2626; border-color: #b91c1c; }
+.ld-merah-tua { background: #991b1b; border-color: #7f1d1d; }
 .ld-marker  {
   background: transparent; border: none;
   font-size: 0.8rem; color: var(--blue-dark);
@@ -676,18 +677,40 @@ details[open] .chevron { transform: rotate(180deg); }
 
 .cal-empty { background: transparent !important; }
 
-/* Kode warna tanggal */
-.cal-weekend    { color: #94a3b8; background: #f8fafc; }
-.cal-libur      { background: #fde8e8; color: #991b1b; font-weight: 700; }
-.cal-kuning     {
-  background: #fef9c3;
-  color: #854d0e;
+/* Kode warna tanggal — tegas dan kontras */
+.cal-weekend    {
+  background: #6d28d9;        /* ungu tegas */
+  color: #ffffff;
+  font-weight: 700;
+}
+.cal-libur      {
+  background: #7c3aed;        /* ungu tegas (libur nasional) */
+  color: #ffffff;
   font-weight: 800;
-  border: 1.5px solid #fcd34d;
+}
+.cal-kuning     {
+  background: #d97706;        /* kuning tegas/amber */
+  color: #ffffff;
+  font-weight: 800;
+  border: 2px solid #b45309;
   border-radius: 4px;
 }
-.cal-hijau      { background: #dcfce7; color: #166534; font-weight: 700; }
-.cal-merah-lewat { background: #fff1f2; color: #991b1b; opacity: 0.8; }
+.cal-hijau      {
+  background: #16a34a;        /* hijau tegas */
+  color: #ffffff;
+  font-weight: 700;
+}
+.cal-merah-prematur {
+  background: #dc2626;        /* merah tegas — zona prematur */
+  color: #ffffff;
+  font-weight: 700;
+}
+.cal-merah-lewat {
+  background: #991b1b;        /* merah gelap — kadaluwarsa */
+  color: #ffffff;
+  font-weight: 700;
+  opacity: 1;
+}
 
 /* Marker / dot tanggal penting */
 .cal-dot {
@@ -697,12 +720,12 @@ details[open] .chevron { transform: rotate(180deg); }
   font-size: 0.45rem;
   font-style: normal;
   line-height: 1;
-  color: var(--blue-dark);
+  color: rgba(255,255,255,0.9);
 }
 
-.cal-kuning .cal-dot  { color: #854d0e; }
-.cal-hijau .cal-dot   { color: #166534; }
-.cal-libur .cal-dot   { color: #991b1b; }
+.cal-kuning .cal-dot  { color: rgba(255,255,255,0.9); }
+.cal-hijau .cal-dot   { color: rgba(255,255,255,0.9); }
+.cal-libur .cal-dot   { color: rgba(255,255,255,0.9); }
 
 /* Responsive */
 @media (max-width: 480px) {
