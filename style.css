@@ -1173,10 +1173,86 @@ textarea {
   height: 100%;
   background: linear-gradient(90deg, #93c5fd, #ffffff);
   border-radius: 99px;
-  animation: splashLoad 2s ease forwards;
+  animation: splashLoad 3.5s ease forwards;
 }
 
 @keyframes splashLoad {
   from { width: 0%; }
   to   { width: 100%; }
 }
+
+/* ============================================================
+   CATATAN DINAMIS — Real-time hints di dalam form
+   ============================================================ */
+.catatan-blok {
+  margin-top: var(--space-5);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1.5px solid var(--border-light);
+  animation: fadeSlideDown 0.3s ease both;
+}
+
+.catatan-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: var(--blue-dark);
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.catatan-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.catatan-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-light);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.catatan-item:last-child { border-bottom: none; }
+
+.catatan-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.catatan-text { flex: 1; color: var(--text-primary); }
+
+.catatan-text strong {
+  font-weight: 700;
+  font-family: 'Poppins', sans-serif;
+}
+
+.catatan-text .tgl-value {
+  display: inline-block;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 0.88rem;
+  padding: 1px 8px;
+  border-radius: var(--radius-full);
+  margin-left: 4px;
+}
+
+/* Warna per tipe catatan */
+.catatan-item.tipe-info   { background: #eff6ff; }
+.catatan-item.tipe-ok     { background: #dcfce7; }
+.catatan-item.tipe-warn   { background: #fffbeb; }
+.catatan-item.tipe-danger { background: #fff1f2; }
+
+.tipe-info   .tgl-value { background: #dbeafe; color: #1e40af; }
+.tipe-ok     .tgl-value { background: #bbf7d0; color: #166534; }
+.tipe-warn   .tgl-value { background: #fef9c3; color: #854d0e; }
+.tipe-danger .tgl-value { background: #fecaca; color: #991b1b; }

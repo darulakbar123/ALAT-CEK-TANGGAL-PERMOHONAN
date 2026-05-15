@@ -1201,3 +1201,150 @@ function renderKalender(data, hasil) {
     }
   });
 })();
+
+/* ============================================================
+   CATATAN DINAMIS — Real-time hints per tahap
+   Muncul langsung saat tanggal diisi, berkembang seiring
+   pengguna mengisi field berikutnya.
+   ============================================================ */
+
+const BATAS_PPID_MERESPONS   = 10;  // HK
+const BATAS_KEBERATAN        = 30;  // HK (Pasal 36 ayat (2) UU KIP)
+const BATAS_SENGKETA_HK      = 14;  // HK (Pasal 13 PERKI 1/2013)
+
+/** Buat satu baris catatan */
+function buatItem(tipe, icon, labelText, tanggal) {
+  const tglHtml = tanggal
+    ? `<span class="tgl-value">${formatTanggal(tanggal)}</span>`
+    : '';
+  return `<div class="catatan-item tipe-${tipe}">
+    <span class="catatan-icon">${icon}</span>
+    <span class="catatan-text">${labelText}${tglHtml}</span>
+  </div>`;
+}
+
+/** Render catatan ke container */
+function renderCatatan(idContainer, items) {
+  const el = document.getElementById(idContainer);
+  if (!el) return;
+  if (!items.length) { el.style.display = 'none'; el.innerHTML = ''; return; }
+  el.innerHTML = `
+    <div class="catatan-header">💡 Catatan Otomatis</div>
+    <div class="catatan-list">${items.join('')}</div>`;
+  el.style.display = 'block';
+}
+
+/* ── UPDATE CATATAN BLOK A (Tahap 1 — Permohonan ke PPID) ── */
+function updateCatatanA() {
+  const valDiterima   = document.getElementById('tglDiterimaTermohon')?.value;
+  const adaTanggapan  = document.querySelector('input[name="adaTanggapanPPID"]:checked')?.value;
+  const valTanggapan  = document.getElementById('tglTanggapanPPID')?.value;
+
+  const items = [];
+
+  if (!valDiterima) { renderCatatan('catatanBlokA', []); return; }
+
+  const tglDiterima = parseInputDate(valDiterima);
+  const batasPPID   = tambahHariKerja(tglDiterima, BATAS_PPID_MERESPONS);
+
+  // ① Selalu muncul begitu tanggal PPID diisi
+  items.push(buatItem('info', '📅',
+    'Batas PPID merespons paling lambat:', batasPPID));
+
+  if (adaTanggapan === 'tidak') {
+    // Tidak ada tanggapan → keberatan bisa diajukan setelah batas PPID
+    const awalKeberatan = hariKerjaBerikutnya(batasPPID);
+    items.push(buatItem('ok', '✅',
+      'Keberatan dapat diajukan mulai:', awalKeberatan));
+    items.push(buatItem('info', 'ℹ',
+      'Pengajuan keberatan ditujukan kepada <strong>Atasan PPID</strong> badan publik yang bersangkutan.', null));
+
+  } else if (adaTanggapan === 'ya') {
+    items.push(buatItem('ok', '✅',
+      'PPID telah merespons — silakan ajukan keberatan kepada <strong>Atasan PPID</strong>.', null));
+
+    if (valTanggapan) {
+      const tglTanggapan  = parseInputDate(valTanggapan);
+      const batasKeberatan = tambahHariKerja(tglTanggapan, BATAS_KEBERATAN);
+      items.push(buatItem('warn', '⏰',
+        'Batas akhir pengajuan keberatan (30 HK):', batasKeberatan));
+    } else {
+      items.push(buatItem('warn', '⏰',
+        'Isi tanggal tanggapan PPID untuk melihat batas akhir keberatan.', null));
+    }
+  }
+
+  renderCatatan('catatanBlokA', items);
+}
+
+/* ── UPDATE CATATAN BLOK B (Tahap 2 — Keberatan ke Atasan PPID) ── */
+function updateCatatanB() {
+  const valKeberatan  = document.getElementById('tglKeberatan')?.value;
+  const adaJawaban    = document.querySelector('input[name="adaJawabanKeberatan"]:checked')?.value;
+  const valJawaban    = document.getElementById('tglJawabanKeberatan')?.value;
+
+  const items = [];
+
+  if (!valKeberatan) { renderCatatan('catatanBlokB', []); return; }
+
+  const tglKeberatan    = parseInputDate(valKeberatan);
+  const batasAtasanPPID = tambahHariKerja(tglKeberatan, BATAS_KEBERATAN);
+
+  // ① Selalu muncul begitu tanggal keberatan diisi
+  items.push(buatItem('info', '📅',
+    'Batas Atasan PPID menjawab (30 HK):', batasAtasanPPID));
+
+  if (adaJawaban === 'tidak') {
+    // Tidak ada jawaban → window sengketa dihitung dari hari ke-30
+    const hijauMulai  = hariKerjaBerikutnya(batasAtasanPPID);  // hari ke-31 = zona hijau
+    const akhirWindow = tambahHariKerja(batasAtasanPPID, BATAS_SENGKETA_HK);
+
+    items.push(buatItem('warn', '🟡',
+      'Zona hati-hati (hari ke-30) — bisa diajukan tapi berisiko:', batasAtasanPPID));
+    items.push(buatItem('ok', '🟢',
+      'Zona aman — sengketa dapat diajukan mulai:', hijauMulai));
+    items.push(buatItem('danger', '⏰',
+      'Batas akhir pengajuan sengketa (hari ke-44):', akhirWindow));
+
+  } else if (adaJawaban === 'ya') {
+    items.push(buatItem('ok', '✅',
+      'Atasan PPID telah menjawab — silakan ajukan sengketa ke Komisi Informasi.', null));
+
+    if (valJawaban) {
+      const tglJawaban   = parseInputDate(valJawaban);
+      const awalSengketa = hariKerjaBerikutnya(tglJawaban);
+      const akhirSengketa = tambahHariKerja(tglJawaban, BATAS_SENGKETA_HK);
+
+      items.push(buatItem('ok', '🟢',
+        'Sengketa dapat diajukan mulai:', awalSengketa));
+      items.push(buatItem('danger', '⏰',
+        'Batas akhir pengajuan sengketa (14 HK):', akhirSengketa));
+    } else {
+      items.push(buatItem('warn', '⏰',
+        'Isi tanggal jawaban keberatan untuk melihat batas pengajuan sengketa.', null));
+    }
+  }
+
+  renderCatatan('catatanBlokB', items);
+}
+
+/* ── PASANG EVENT LISTENERS ── */
+document.addEventListener('DOMContentLoaded', () => {
+  // Tahap 1
+  ['tglDiterimaTermohon', 'tglTanggapanPPID'].forEach(id => {
+    document.getElementById(id)?.addEventListener('change', updateCatatanA);
+    document.getElementById(id)?.addEventListener('input', updateCatatanA);
+  });
+  document.querySelectorAll('input[name="adaTanggapanPPID"]').forEach(el =>
+    el.addEventListener('change', updateCatatanA)
+  );
+
+  // Tahap 2
+  ['tglKeberatan', 'tglJawabanKeberatan'].forEach(id => {
+    document.getElementById(id)?.addEventListener('change', updateCatatanB);
+    document.getElementById(id)?.addEventListener('input', updateCatatanB);
+  });
+  document.querySelectorAll('input[name="adaJawabanKeberatan"]').forEach(el =>
+    el.addEventListener('change', updateCatatanB)
+  );
+});
