@@ -417,7 +417,8 @@ function periksaTenggat(data) {
     // Window pengajuan sengketa:
     //   - Mulai: hari kerja pertama setelah batas 30 HK Atasan PPID
     //   - Akhir: 14 hari kerja setelah batas 30 HK tersebut
-    awalWindow = hariKerjaBerikutnya(batasJawabAtasanPPID);
+    awalWindow = batasJawabAtasanPPID; // hari ke-30 = zona kuning (batas PPID)
+    const hijauMulai = hariKerjaBerikutnya(batasJawabAtasanPPID); // hari ke-31 = zona hijau aman
     akhirWindow = tambahHariKerja(batasJawabAtasanPPID, BATAS_AJUKAN_SENGKETA);
 
     // Tambahkan ke timeline
@@ -438,7 +439,7 @@ function periksaTenggat(data) {
     });
 
     // --- Penentuan Status ---
-    if (tglSengketa <= batasJawabAtasanPPID) {
+    if (tglSengketa < batasJawabAtasanPPID) {
       // Diajukan sebelum 30 HK Atasan PPID berakhir → PREMATUR
       status = 'PREMATUR';
       const hkKurang = hitungHariKerja(tglSengketa, batasJawabAtasanPPID);
@@ -578,6 +579,7 @@ function periksaTenggat(data) {
     dasarHukum,
     awalWindow: awalWindow || null,
     akhirWindow,
+    batasJawabAtasanPPID: batasJawabAtasanPPID || null,
     peringatanKeberatan,
   };
 }
@@ -684,7 +686,7 @@ function renderDasarHukum(items) {
  *
  * @param {Object} hasil - Hasil dari periksaTenggat()
  */
-function tampilkanHasil(hasil) {
+function tampilkanHasil(hasil, data) {
   const { status, penjelasan, timeline, dasarHukum, peringatanKeberatan } = hasil;
   const { ikon, kelas } = petaStatus(status);
 
@@ -717,6 +719,9 @@ function tampilkanHasil(hasil) {
 
   // --- Dasar Hukum ---
   renderDasarHukum(dasarHukum);
+
+  // --- Kalender ---
+  renderKalender(data, hasil);
 }
 
 /* ============================================================
@@ -896,7 +901,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Jalankan pemeriksaan dan tampilkan hasil
     try {
       const hasil = periksaTenggat(data);
-      tampilkanHasil(hasil);
+      tampilkanHasil(hasil, data);
     } catch (err) {
       console.error('Kesalahan saat memeriksa tenggat:', err);
       validasiErrorEl.innerHTML =
@@ -943,3 +948,151 @@ document.addEventListener('DOMContentLoaded', function () {
 /* ============================================================
    AKHIR script.js
    ============================================================ */
+
+/* ============================================================
+   FITUR KALENDER HARI KERJA
+   Menampilkan kalender mini untuk setiap bulan yang dilalui
+   dalam perhitungan, dengan kode warna:
+     🔴 Merah  = libur nasional / cuti bersama / kadaluwarsa
+     ⬜ Abu    = akhir pekan
+     🟡 Kuning = hari ke-30 (batas Atasan PPID — zona hati-hati)
+     🟢 Hijau  = hari ke-31 hingga akhir window (zona aman)
+   ============================================================ */
+
+const NAMA_BULAN_KAL = [
+  'Januari','Februari','Maret','April','Mei','Juni',
+  'Juli','Agustus','September','Oktober','November','Desember'
+];
+
+const NAMA_HARI_KAL = ['Sen','Sel','Rab','Kam','Jum','Sab','Min'];
+
+/**
+ * Menentukan daftar bulan yang perlu ditampilkan kalender.
+ * Rentang: dari bulan tglKeberatan hingga bulan tglSengketa/akhirWindow.
+ */
+function hitungBulanTerlibat(data, hasil) {
+  const tglMulai = new Date(data.tglKeberatan.getFullYear(), data.tglKeberatan.getMonth(), 1);
+
+  let tglAkhirRef = hasil.akhirWindow || data.tglSengketa;
+  if (data.tglSengketa > tglAkhirRef) tglAkhirRef = data.tglSengketa;
+  const tglSelesai = new Date(tglAkhirRef.getFullYear(), tglAkhirRef.getMonth(), 1);
+
+  const list = [];
+  const cur = new Date(tglMulai);
+  while (cur <= tglSelesai) {
+    list.push({ tahun: cur.getFullYear(), bulan: cur.getMonth() });
+    cur.setMonth(cur.getMonth() + 1);
+  }
+  return list;
+}
+
+/**
+ * Menentukan kelas warna dan tooltip untuk setiap tanggal di kalender.
+ */
+function getStatusTanggal(date, data, hasil) {
+  const dayOfWeek = date.getDay();
+  const dk = formatKunci(date);
+  let kelas = '';
+  let tooltip = '';
+  let marker = '';
+
+  // Tandai tanggal-tanggal penting dari timeline
+  if (dk === formatKunci(data.tglDiterimaTermohon)) {
+    marker = '●'; tooltip = 'Permohonan diterima PPID';
+  }
+  if (dk === formatKunci(data.tglKeberatan)) {
+    marker = '●'; tooltip = (tooltip ? tooltip + ' · ' : '') + 'Keberatan diajukan';
+  }
+  if (hasil.batasJawabAtasanPPID && dk === formatKunci(hasil.batasJawabAtasanPPID)) {
+    tooltip = 'Hari ke-30: Batas Atasan PPID — Zona Kuning';
+  }
+  if (hasil.akhirWindow && dk === formatKunci(hasil.akhirWindow)) {
+    tooltip = (tooltip ? tooltip + ' · ' : '') + 'Batas akhir pengajuan sengketa';
+  }
+  if (dk === formatKunci(data.tglSengketa)) {
+    marker = '★'; tooltip = (tooltip ? tooltip + ' · ' : '') + 'Sengketa diajukan';
+  }
+
+  // Akhir pekan
+  if (dayOfWeek === 0 || dayOfWeek === 6) {
+    return { kelas: 'cal-weekend', tooltip: tooltip || 'Akhir pekan', marker };
+  }
+
+  // Hari libur nasional / cuti bersama
+  if (adalahLiburNasional(date)) {
+    return { kelas: 'cal-libur', tooltip: tooltip || 'Libur nasional / cuti bersama', marker };
+  }
+
+  // Hari ke-30 → KUNING (zona batas)
+  if (hasil.batasJawabAtasanPPID && dk === formatKunci(hasil.batasJawabAtasanPPID)) {
+    return { kelas: 'cal-kuning', tooltip, marker };
+  }
+
+  // Hari ke-31 s/d ke-44 → HIJAU (zona aman)
+  if (hasil.batasJawabAtasanPPID && hasil.akhirWindow) {
+    const hijauMulai = hariKerjaBerikutnya(hasil.batasJawabAtasanPPID);
+    if (date >= hijauMulai && date <= hasil.akhirWindow) {
+      return { kelas: 'cal-hijau', tooltip: tooltip || 'Zona aman — dapat ajukan sengketa', marker };
+    }
+  }
+
+  // Setelah kadaluwarsa → MERAH
+  if (hasil.akhirWindow && date > hasil.akhirWindow) {
+    return { kelas: 'cal-merah-lewat', tooltip: tooltip || 'Kadaluwarsa', marker };
+  }
+
+  // Hari kerja biasa
+  return { kelas: '', tooltip, marker };
+}
+
+/**
+ * Membuat HTML untuk satu kalender bulan.
+ */
+function buatKalenderBulan(tahun, bulan, data, hasil) {
+  const firstDay   = new Date(tahun, bulan, 1);
+  const totalDays  = new Date(tahun, bulan + 1, 0).getDate();
+  // Kolom mulai: Senin = 0 … Minggu = 6
+  const startCol   = (firstDay.getDay() + 6) % 7;
+
+  let html = `<div class="mini-calendar">
+    <div class="cal-header">${NAMA_BULAN_KAL[bulan]} ${tahun}</div>
+    <div class="cal-grid">`;
+
+  // Header nama hari
+  NAMA_HARI_KAL.forEach((h, i) => {
+    html += `<span class="cal-wh${i >= 5 ? ' cal-wh-we' : ''}">${h}</span>`;
+  });
+
+  // Sel kosong sebelum hari pertama
+  for (let i = 0; i < startCol; i++) {
+    html += `<span class="cal-day cal-empty"></span>`;
+  }
+
+  // Isi hari
+  for (let d = 1; d <= totalDays; d++) {
+    const date = new Date(tahun, bulan, d);
+    const { kelas, tooltip, marker } = getStatusTanggal(date, data, hasil);
+    html += `<span class="cal-day${kelas ? ' ' + kelas : ''}"${tooltip ? ` title="${tooltip}"` : ''}>
+      ${d}${marker ? `<i class="cal-dot">${marker}</i>` : ''}
+    </span>`;
+  }
+
+  html += `</div></div>`;
+  return html;
+}
+
+/**
+ * Fungsi utama: render semua kalender yang relevan ke DOM.
+ */
+function renderKalender(data, hasil) {
+  const section   = document.getElementById('kalenderSection');
+  const container = document.getElementById('kalenderContainer');
+  if (!section || !container) return;
+
+  const bulanList = hitungBulanTerlibat(data, hasil);
+  container.innerHTML = bulanList
+    .map(({ tahun, bulan }) => buatKalenderBulan(tahun, bulan, data, hasil))
+    .join('');
+
+  section.style.display = 'block';
+}

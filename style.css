@@ -140,20 +140,24 @@ legend + * { clear: both; }
 }
 
 /* Logo */
+/* Logo background sudah putih/terang — tampilkan langsung tanpa kotak tambahan */
 .header-logo-wrap {
   flex-shrink: 0;
-  width: 80px; height: 80px;
-  border-radius: 50%;
-  overflow: hidden;
-  border: 2.5px solid rgba(255,255,255,0.25);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.35), 0 0 0 1px rgba(148,163,184,0.3);
-  background: #000;
+  width: 96px; height: 96px;
+  border-radius: 14px;
+  background: #ffffff;
+  padding: 5px;
+  box-shadow:
+    0 6px 24px rgba(0,0,0,0.35),
+    0 0 0 1px rgba(255,255,255,0.18);
 }
 
 .header-logo {
   width: 100%; height: 100%;
-  object-fit: cover; object-position: center;
+  object-fit: contain;
+  object-position: center;
   display: block;
+  border-radius: 10px;
 }
 
 /* Teks Header */
@@ -494,7 +498,7 @@ details[open] .chevron { transform: rotate(180deg); }
 /* Branding firma di footer */
 .footer-brand { display: flex; align-items: center; gap: var(--space-4); padding-bottom: var(--space-4); border-bottom: 1px solid rgba(255,255,255,0.10); }
 
-.footer-logo { width: 52px; height: 52px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.20); object-fit: cover; background: #000; flex-shrink: 0; }
+.footer-logo { width: 52px; height: 52px; border-radius: 8px; background: #fff; padding: 3px; object-fit: contain; object-position: center; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
 
 .footer-firm { font-family: 'Poppins', sans-serif; font-size: 0.95rem; font-weight: 600; color: white; margin-bottom: 2px; }
 
@@ -526,7 +530,7 @@ details[open] .chevron { transform: rotate(180deg); }
 @media (max-width: 720px) {
   .header-ref-laws { display:none; }
   .header-title { font-size:1.4rem; }
-  .header-logo-wrap { width:60px; height:60px; }
+  .header-logo-wrap { width:68px; height:68px; }
   .alur-grid { grid-template-columns:1fr; }
   .form-row.two-col { grid-template-columns:1fr; }
   .form-group.half { max-width:100%; }
@@ -545,7 +549,7 @@ details[open] .chevron { transform: rotate(180deg); }
   .container { padding:0 var(--space-4); }
   .header-inner { gap:var(--space-3); }
   .header-emblem { font-size:2rem; }
-  .header-logo-wrap { width:52px; height:52px; }
+  .header-logo-wrap { width:56px; height:56px; }
   .form-block { padding:var(--space-5); }
   .status-card { padding:var(--space-5); }
   .status-header { flex-direction:column; align-items:flex-start; gap:var(--space-3); }
@@ -554,4 +558,157 @@ details[open] .chevron { transform: rotate(180deg); }
   .disclaimer-card { flex-direction:column; }
   .radio-group { flex-direction:column; }
   .radio-label { width:100%; }
+}
+
+/* ============================================================
+   KALENDER HARI KERJA
+   ============================================================ */
+
+/* Legend */
+.kalender-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1.5px solid var(--border-light);
+  background: var(--bg-gray-50);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-family: 'Nunito', sans-serif;
+}
+
+.legend-dot {
+  width: 14px; height: 14px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+
+.ld-hijau   { background: #dcfce7; border-color: #86efac; }
+.ld-kuning  { background: #fef9c3; border-color: #fcd34d; }
+.ld-libur   { background: #fde8e8; border-color: #fca5a5; }
+.ld-weekend { background: #f1f5f9; border-color: #cbd5e1; }
+.ld-merah   { background: #fff1f2; border-color: #fca5a5; }
+.ld-marker  {
+  background: transparent; border: none;
+  font-size: 0.8rem; color: var(--blue-dark);
+  width: auto; height: auto;
+  letter-spacing: 0.1em;
+}
+
+/* Grid kalender (responsive) */
+.kalender-bulan-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: var(--space-5);
+  padding: var(--space-6);
+}
+
+/* Satu kalender bulan */
+.mini-calendar {
+  background: var(--bg-white);
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Header nama bulan */
+.cal-header {
+  background: linear-gradient(135deg, var(--blue-dark), var(--blue-mid));
+  color: white;
+  padding: 8px 12px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: 0.04em;
+}
+
+/* Grid hari (7 kolom) */
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  padding: 4px;
+  background: var(--border-light);
+}
+
+/* Header nama hari */
+.cal-wh {
+  padding: 4px 2px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--text-muted);
+  background: var(--bg-white);
+  letter-spacing: 0.03em;
+}
+
+.cal-wh-we { color: #94a3b8; }
+
+/* Sel hari */
+.cal-day {
+  position: relative;
+  min-height: 30px;
+  padding: 4px 2px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  text-align: center;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-white);
+  cursor: default;
+  transition: filter var(--transition-fast);
+}
+
+.cal-day:hover:not(.cal-empty) { filter: brightness(0.95); }
+
+.cal-empty { background: transparent !important; }
+
+/* Kode warna tanggal */
+.cal-weekend    { color: #94a3b8; background: #f8fafc; }
+.cal-libur      { background: #fde8e8; color: #991b1b; font-weight: 700; }
+.cal-kuning     {
+  background: #fef9c3;
+  color: #854d0e;
+  font-weight: 800;
+  border: 1.5px solid #fcd34d;
+  border-radius: 4px;
+}
+.cal-hijau      { background: #dcfce7; color: #166534; font-weight: 700; }
+.cal-merah-lewat { background: #fff1f2; color: #991b1b; opacity: 0.8; }
+
+/* Marker / dot tanggal penting */
+.cal-dot {
+  position: absolute;
+  top: 1px;
+  right: 2px;
+  font-size: 0.45rem;
+  font-style: normal;
+  line-height: 1;
+  color: var(--blue-dark);
+}
+
+.cal-kuning .cal-dot  { color: #854d0e; }
+.cal-hijau .cal-dot   { color: #166534; }
+.cal-libur .cal-dot   { color: #991b1b; }
+
+/* Responsive */
+@media (max-width: 480px) {
+  .kalender-bulan-grid {
+    grid-template-columns: 1fr;
+    padding: var(--space-4);
+  }
+  .kalender-legend { padding: var(--space-3) var(--space-4); gap: var(--space-3); }
 }
