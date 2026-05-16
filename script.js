@@ -891,17 +891,15 @@ document.addEventListener('DOMContentLoaded', function () {
     const kesalahan = validasiForm(nilai);
 
     if (kesalahan.length > 0) {
-      validasiErrorEl.innerHTML =
-        `<strong>Mohon perbaiki kesalahan berikut:</strong>` +
-        `<ul>${kesalahan.map(k => `<li>${k}</li>`).join('')}</ul>`;
-      validasiErrorEl.style.display = 'block';
-      validasiErrorEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Highlight field yang bermasalah, scroll ke yang pertama
+      highlightInvalidFields(nilai);
+      const firstInvalid = document.querySelector('.field-invalid');
+      if (firstInvalid) firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
 
-    // Hapus pesan error jika valid
-    validasiErrorEl.style.display = 'none';
-    validasiErrorEl.innerHTML = '';
+    // Bersihkan highlight error jika semua valid
+    clearFieldHighlights();
 
     // Konversi string ke objek Date
     const data = {
@@ -921,10 +919,7 @@ document.addEventListener('DOMContentLoaded', function () {
       tampilkanHasil(hasil, data);
     } catch (err) {
       console.error('Kesalahan saat memeriksa tenggat:', err);
-      validasiErrorEl.innerHTML =
-        `<strong>Terjadi kesalahan teknis.</strong> Mohon periksa kembali data yang diinput. ` +
-        `<br>Detail: ${err.message}`;
-      validasiErrorEl.style.display = 'block';
+      console.error('Detail error:', err.message);
     }
   });
 
@@ -933,8 +928,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // ----------------------------------------------------------
   btnReset.addEventListener('click', function () {
     form.reset();
-    validasiErrorEl.style.display = 'none';
-    validasiErrorEl.innerHTML = '';
+    clearFieldHighlights();
 
     // Sembunyikan kembali field kondisional
     rowTanggapanPPID.classList.remove('visible');
@@ -1236,45 +1230,100 @@ function renderCatatan(idContainer, items) {
 
 /* ── UPDATE CATATAN BLOK A (Tahap 1 — Permohonan ke PPID) ── */
 function updateCatatanA() {
-  const valDiterima   = document.getElementById('tglDiterimaTermohon')?.value;
-  const adaTanggapan  = document.querySelector('input[name="adaTanggapanPPID"]:checked')?.value;
-  const valTanggapan  = document.getElementById('tglTanggapanPPID')?.value;
-
-  const items = [];
+  const valDiterima  = document.getElementById('tglDiterimaTermohon')?.value;
+  const adaTanggapan = document.querySelector('input[name="adaTanggapanPPID"]:checked')?.value;
+  const valTanggapan = document.getElementById('tglTanggapanPPID')?.value;
 
   if (!valDiterima) { renderCatatan('catatanBlokA', []); return; }
 
-  const tglDiterima = parseInputDate(valDiterima);
-  const batasPPID   = tambahHariKerja(tglDiterima, BATAS_PPID_MERESPONS);
+  const tglDiterima   = parseInputDate(valDiterima);
+  // Batas PPID merespons: 10 HK (Pasal 22 UU KIP)
+  const batasPPID10HK = tambahHariKerja(tglDiterima, 10);
+  // Batas jika diperpanjang: 10+7 = 17 HK (Pasal 22 ayat (3) UU KIP)
+  const batasPPID17HK = tambahHariKerja(tglDiterima, 17);
 
-  // ① Selalu muncul begitu tanggal PPID diisi
-  items.push(buatItem('info', '📅',
-    'Batas PPID merespons paling lambat:', batasPPID));
+  const items = [];
 
-  if (adaTanggapan === 'tidak') {
-    // Tidak ada tanggapan → keberatan bisa diajukan setelah batas PPID
-    const awalKeberatan = hariKerjaBerikutnya(batasPPID);
-    items.push(buatItem('ok', '✅',
-      'Keberatan dapat diajukan mulai:', awalKeberatan));
-    items.push(buatItem('info', 'ℹ',
-      'Pengajuan keberatan ditujukan kepada <strong>Atasan PPID</strong> badan publik yang bersangkutan.', null));
+  if (!adaTanggapan || adaTanggapan === 'tidak') {
+    // ── Scenario: tidak ada tanggapan ──────────────────────────────────
+    // Keberatan paling cepat = hari ke-11 HK (sehari setelah batas 10 HK)
+    const awalKeberatan  = hariKerjaBerikutnya(batasPPID10HK);
+    // Batas akhir keberatan = 30 HK sejak batas PPID habis (Pasal 36 UU KIP)
+    const akhirKeberatan = tambahHariKerja(batasPPID10HK, 30);
+
+    items.push(buatItemRich('info', '📅',
+      `Berdasarkan <strong>Pasal 22 UU No. 14/2008 tentang KIP</strong>, PPID wajib merespons ` +
+      `permohonan informasi paling lambat <strong>10 hari kerja</strong> sejak diterima, yaitu ` +
+      `tanggal <span class="tgl-chip">${formatTanggal(batasPPID10HK)}</span>. ` +
+      `PPID dapat memperpanjang 7 hari kerja (sampai ` +
+      `<span class="tgl-chip">${formatTanggal(batasPPID17HK)}</span>) ` +
+      `dengan pemberitahuan tertulis kepada pemohon.`
+    ));
+
+    items.push(buatItemRich('ok', '✅',
+      `Jika PPID <strong>tidak memberikan tanggapan</strong> dalam 10 hari kerja, pemohon berhak ` +
+      `mengajukan keberatan kepada Atasan PPID mulai tanggal ` +
+      `<span class="tgl-chip tgl-chip-ok">${formatTanggal(awalKeberatan)}</span>. ` +
+      `<em>(Pasal 35 ayat (1) huruf d UU No. 14/2008)</em>`
+    ));
+
+    items.push(buatItemRich('warn', '⏰',
+      `Batas akhir pengajuan keberatan: ` +
+      `<span class="tgl-chip tgl-chip-warn">${formatTanggal(akhirKeberatan)}</span> ` +
+      `(30 hari kerja sejak batas respons PPID habis). ` +
+      `<em>(Pasal 36 ayat (1) UU No. 14/2008)</em>`
+    ));
 
   } else if (adaTanggapan === 'ya') {
-    items.push(buatItem('ok', '✅',
-      'PPID telah merespons — silakan ajukan keberatan kepada <strong>Atasan PPID</strong>.', null));
-
+    // ── Scenario: ada tanggapan ────────────────────────────────────────
     if (valTanggapan) {
-      const tglTanggapan  = parseInputDate(valTanggapan);
-      const batasKeberatan = tambahHariKerja(tglTanggapan, BATAS_KEBERATAN);
-      items.push(buatItem('warn', '⏰',
-        'Batas akhir pengajuan keberatan (30 HK):', batasKeberatan));
+      const tglTanggapan   = parseInputDate(valTanggapan);
+      // Paling cepat: 7 HK setelah tanggapan diterima
+      const awalKeberatan  = tambahHariKerja(tglTanggapan, 7);
+      // Paling lambat: 30 HK setelah tanggapan diterima (Pasal 36 UU KIP)
+      const akhirKeberatan = tambahHariKerja(tglTanggapan, 30);
+
+      items.push(buatItemRich('info', '📝',
+        `PPID telah memberikan tanggapan. Berdasarkan <strong>Pasal 35 ayat (1) UU No. 14/2008</strong>, ` +
+        `pemohon dapat mengajukan keberatan kepada Atasan PPID jika tanggapan tidak memuaskan ` +
+        `atau tidak sesuai dengan permohonan.`
+      ));
+
+      items.push(buatItemRich('warn', 'ℹ️',
+        `Tidak terdapat ketentuan eksplisit mengenai batas <strong>paling cepat</strong> ` +
+        `pengajuan keberatan setelah tanggapan PPID diterima — sepanjang tanggapan tersebut ` +
+        `tidak memuat kalimat perpanjangan waktu. ` +
+        `<strong>Disarankan</strong> mengajukan keberatan setidaknya ` +
+        `<span class="tgl-chip tgl-chip-ok">${formatTanggal(awalKeberatan)}</span> ` +
+        `(7 hari kerja setelah tanggapan diterima) untuk menghindari potensi permasalahan ` +
+        `saat pengajuan sengketa ke Komisi Informasi.` +
+        `<em>Catatan: 7 HK ini merupakan rekomendasi kehati-hatian, bukan ketentuan hukum yang tersurat.</em>`
+      ));
+
+      items.push(buatItemRich('danger', '⏰',
+        `Batas <strong>paling lambat</strong> pengajuan keberatan: ` +
+        `<span class="tgl-chip tgl-chip-warn">${formatTanggal(akhirKeberatan)}</span> ` +
+        `(30 hari kerja sejak tanggapan diterima). ` +
+        `<em>(Pasal 36 ayat (1) UU No. 14/2008 tentang Keterbukaan Informasi Publik)</em>`
+      ));
+
     } else {
-      items.push(buatItem('warn', '⏰',
-        'Isi tanggal tanggapan PPID untuk melihat batas akhir keberatan.', null));
+      items.push(buatItemRich('info', '📝',
+        `PPID telah memberikan tanggapan. Silakan isi <strong>tanggal tanggapan diterima</strong> ` +
+        `untuk mengetahui kapan keberatan dapat dan harus diajukan.`
+      ));
     }
   }
 
   renderCatatan('catatanBlokA', items);
+}
+
+/** Item catatan dengan HTML bebas (untuk teks panjang + legal basis) */
+function buatItemRich(tipe, icon, html) {
+  return `<div class="catatan-item tipe-${tipe}">
+    <span class="catatan-icon">${icon}</span>
+    <span class="catatan-text">${html}</span>
+  </div>`;
 }
 
 /* ── UPDATE CATATAN BLOK B (Tahap 2 — Keberatan ke Atasan PPID) ── */
@@ -1362,3 +1411,66 @@ if (document.readyState === 'loading') {
 } else {
   setupCatatanListeners();
 }
+
+/* ============================================================
+   FIELD HIGHLIGHT VALIDATION (menggantikan kotak error merah)
+   ============================================================ */
+
+/** Highlight field yang belum diisi / tidak valid */
+function highlightInvalidFields(nilai) {
+  clearFieldHighlights();
+
+  const cek = [
+    { id: 'tglDiterimaTermohon', kosong: !nilai.tglDiterimaTermohon },
+    { id: 'tglKeberatan',        kosong: !nilai.tglKeberatan },
+    { id: 'tglSengketa',         kosong: !nilai.tglSengketa },
+  ];
+
+  if (!nilai.adaTanggapanPPID) {
+    document.querySelectorAll('input[name="adaTanggapanPPID"]').forEach(el =>
+      el.closest('.radio-group')?.classList.add('field-invalid-group')
+    );
+  }
+  if (!nilai.adaJawabanKeberatan) {
+    document.querySelectorAll('input[name="adaJawabanKeberatan"]').forEach(el =>
+      el.closest('.radio-group')?.classList.add('field-invalid-group')
+    );
+  }
+  if (nilai.adaTanggapanPPID === 'ya' && !nilai.tglTanggapanPPID) {
+    cek.push({ id: 'tglTanggapanPPID', kosong: true });
+  }
+  if (nilai.adaJawabanKeberatan === 'ya' && !nilai.tglJawabanKeberatan) {
+    cek.push({ id: 'tglJawabanKeberatan', kosong: true });
+  }
+
+  cek.forEach(({ id, kosong }) => {
+    if (kosong) {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('field-invalid');
+    }
+  });
+}
+
+/** Bersihkan semua highlight invalid */
+function clearFieldHighlights() {
+  document.querySelectorAll('.field-invalid').forEach(el =>
+    el.classList.remove('field-invalid')
+  );
+  document.querySelectorAll('.field-invalid-group').forEach(el =>
+    el.classList.remove('field-invalid-group')
+  );
+}
+
+// Auto-clear highlight saat field diisi
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('input[type="date"]').forEach(el => {
+    el.addEventListener('change', function() {
+      this.classList.remove('field-invalid');
+    });
+  });
+  document.querySelectorAll('input[type="radio"]').forEach(el => {
+    el.addEventListener('change', function() {
+      this.closest('.radio-group')?.classList.remove('field-invalid-group');
+    });
+  });
+});

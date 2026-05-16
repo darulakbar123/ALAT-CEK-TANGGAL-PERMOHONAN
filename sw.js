@@ -4,7 +4,7 @@
    Semua file di-cache agar bisa dipakai tanpa internet.
    ============================================================ */
 
-const CACHE_NAME   = 'ceksengketa-v2';
+const CACHE_NAME   = 'ceksengketa-v3';
 const CACHE_ASSETS = [
   './',
   './index.html',
