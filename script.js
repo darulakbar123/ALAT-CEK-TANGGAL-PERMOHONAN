@@ -1329,11 +1329,14 @@ function updateCatatanB() {
 }
 
 /* ── PASANG EVENT LISTENERS ── */
-document.addEventListener('DOMContentLoaded', () => {
+function setupCatatanListeners() {
   // Tahap 1
   ['tglDiterimaTermohon', 'tglTanggapanPPID'].forEach(id => {
-    document.getElementById(id)?.addEventListener('change', updateCatatanA);
-    document.getElementById(id)?.addEventListener('input', updateCatatanA);
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('change', updateCatatanA);
+      el.addEventListener('input',  updateCatatanA);
+    }
   });
   document.querySelectorAll('input[name="adaTanggapanPPID"]').forEach(el =>
     el.addEventListener('change', updateCatatanA)
@@ -1341,10 +1344,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Tahap 2
   ['tglKeberatan', 'tglJawabanKeberatan'].forEach(id => {
-    document.getElementById(id)?.addEventListener('change', updateCatatanB);
-    document.getElementById(id)?.addEventListener('input', updateCatatanB);
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('change', updateCatatanB);
+      el.addEventListener('input',  updateCatatanB);
+    }
   });
   document.querySelectorAll('input[name="adaJawabanKeberatan"]').forEach(el =>
     el.addEventListener('change', updateCatatanB)
   );
-});
+}
+
+// Script diload di akhir <body> — DOM sudah siap, langsung pasang listener
+// (DOMContentLoaded sudah terlambat, readyState pasti 'interactive'/'complete')
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', setupCatatanListeners);
+} else {
+  setupCatatanListeners();
+}
